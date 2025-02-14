@@ -388,4 +388,5 @@ localhost ansible_connection=local
 This setup integrates all the tools specified to create a CI/CD pipeline for a simple Java web application. Adjust configurations and scripts according to your specific requirements and environment.
 #   D e v O p s - P r o j e c t  
  #   D e v O p s - P r o j e c t  
+ #   D e v O p s - P r o j e c t  
  
