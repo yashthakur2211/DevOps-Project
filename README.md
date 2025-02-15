@@ -1,77 +1,84 @@
-# DevOpsProject
-Creating a project that integrates Ansible, Jenkins, Docker Desktop, Minikube, Maven, and Apache Tomcat involves several steps. Below is a detailed guide to set up a CI/CD pipeline using these tools.
+# DevOps Project
 
-### Prerequisites
-1. **Install Ansible**:
-2. **Install Jenkins**: Download and install Jenkins from the [official website]
-3. **Install Docker Desktop**: Get Docker Desktop from the [Docker website]
-4. **Install Minikube**: Install Minikube by following the [Minikube start guide]
-5. **Install Maven**: Install Maven from the [Apache Maven site]
-6. **Install Apache Tomcat**: Download and set up Apache Tomcat from the [Tomcat website]
+This project integrates **Ansible, Jenkins, Docker Desktop, Minikube, Maven, and Apache Tomcat** to establish a robust CI/CD pipeline.
 
-### Project Structure
-Let's create a sample Java project that will be built using Maven, packaged into a Docker container, deployed on Minikube, and managed via Ansible and Jenkins.
+## 🚀 Prerequisites
 
-### Step-by-Step Guide
+Ensure you have the following installed before proceeding:
 
-### Installation and Configurations
-1) Launch and Connect | EC2 | t2 medium | amazon linux 2023
-Region | ap-south-1
+1. **Ansible**
+2. **Jenkins** - [Official Website](https://www.jenkins.io/)
+3. **Docker Desktop** - [Docker Website](https://www.docker.com/)
+4. **Minikube** - [Minikube Start Guide](https://minikube.sigs.k8s.io/docs/start/)
+5. **Maven** - [Apache Maven](https://maven.apache.org/)
+6. **Apache Tomcat** - [Tomcat Website](https://tomcat.apache.org/)
 
-```
-// update machine
+## 📁 Project Structure
+
+This project involves:
+
+- **Building a Java web application** using Maven
+- **Containerizing the application** with Docker
+- **Deploying it on Minikube**
+- **Managing infrastructure** using Ansible & Jenkins
+
+---
+
+## 🛠️ Installation & Configuration
+
+### 1️⃣ Setup EC2 Instance
+
+Launch an **Amazon Linux 2023** instance (t2.medium) in **ap-south-1** region.
+
+### Update & Install Required Packages
+
+```sh
 sudo yum update -y
-// install python
-// install java
-sudo yum install jre
-java --version
-// install maven
-sudo yum install maven -y
-sudo yum install python -y
-// install git
-pwd
-ls
-// install docker
-sudo yum install docker
+sudo yum install -y jre maven python git docker
+```
+
+### Configure Docker
+
+```sh
 sudo usermod -aG docker $USER && newgrp docker
+sudo systemctl enable --now docker.service
 sudo docker login
+```
 
-sudo systemctl status docker.service
-sudo systemctl start docker.service
-sudo systemctl enable docker.service
+### Install Kubectl
 
-// installation of kubectl
+```sh
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.29.3/2024-04-19/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
 echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
 kubectl version --client
+```
 
-// install minikube
+### Install Minikube
+
+```sh
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm
 sudo rpm -Uvh minikube-latest.x86_64.rpm
-
-
 minikube start
-minikube addons storage-provisioner
-minikube addons enable storage-provisioner
-minikube addons enable default-storageclass
 ```
 
-// install jenkins
-```
+### Install Jenkins
+
+```sh
 sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
 sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-sudo yum install fontconfig java-17-openjdk
-sudo yum install jenkins
+sudo yum install fontconfig java-17-openjdk jenkins -y
+```
 
-#### 1. Create a Maven Project
-Create a simple Java web application with Maven.
+---
 
-**pom.xml**:
+## 🔨 Create a Maven Project
+
+### **pom.xml**
+
 ```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
     <artifactId>simple-webapp</artifactId>
@@ -90,7 +97,8 @@ Create a simple Java web application with Maven.
 </project>
 ```
 
-**src/main/webapp/index.jsp**:
+### **src/main/webapp/index.jsp**
+
 ```jsp
 <!DOCTYPE html>
 <html>
@@ -103,118 +111,41 @@ Create a simple Java web application with Maven.
 </html>
 ```
 
-Solution for mvn build error
+### Maven Build Commands
 
-The error message indicates that the Maven WAR plugin requires a `web.xml` file to be present in the `src/main/webapp/WEB-INF` directory, but it cannot find it. Here's how to solve this issue step by step:
-
-### Step-by-Step Solution
-
-1. **Create the `WEB-INF` Directory**:
-   - Ensure that the `WEB-INF` directory exists under `src/main/webapp`:
-     ```sh
-     mkdir -p src/main/webapp/WEB-INF
-     ```
-
-2. **Create the `web.xml` File**:
-   - Create a `web.xml` file in the `src/main/webapp/WEB-INF` directory. This file is required for a proper web application deployment descriptor.
-     ```sh
-     touch src/main/webapp/WEB-INF/web.xml
-     ```
-
-3. **Populate the `web.xml` File**:
-   - Add the necessary content to the `web.xml` file. Here is a basic example of a `web.xml` configuration:
-     ```xml
-     <?xml version="1.0" encoding="UTF-8"?>
-     <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-              version="3.1">
-         <display-name>simple-webapp</display-name>
-         <welcome-file-list>
-             <welcome-file>index.jsp</welcome-file>
-         </welcome-file-list>
-     </web-app>
-     ```
-
-4. **Ensure `index.jsp` Exists**:
-   - Make sure the `index.jsp` file exists in the `src/main/webapp` directory. You can create it as follows:
-     ```sh
-     touch src/main/webapp/index.jsp
-     ```
-
-   - Add content to the `index.jsp` file:
-     ```jsp
-     <html>
-     <body>
-         <h2>Hello, World!</h2>
-     </body>
-     </html>
-     ```
-
-5. **Re-run Maven Package Command**:
-   - Now, run the Maven package command again to compile and package the WAR file:
-     ```sh
-     mvn package
-     ```
-
-### `pom.xml` File
-
-Your `pom.xml` should look like this:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>simple-webapp</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <build>
-        <finalName>simple-webapp</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
-            </plugin>
-        </plugins>
-    </build>
-</project>
-```
-
-Run following commands 
-```
-mvn build
+```sh
+mvn clean package
 mvn compile
 mvn test
-mvn package
 mvn verify
 mvn install
 ```
 
-### Summary
+---
 
-By ensuring the `web.xml` file exists in the correct directory and populating it with the required content, you can resolve the error and successfully package your Maven web application into a WAR file. Then, you can deploy the WAR file to a servlet container like Apache Tomcat.
+## 📦 Dockerizing the Application
 
-#### 2. Dockerize the Application
-Create a Dockerfile to containerize the web application.
+### **Dockerfile**
 
-**Dockerfile**:
 ```Dockerfile
 FROM tomcat:9.0
 COPY target/simple-webapp.war /usr/local/tomcat/webapps/
 ```
 
-#### 3. Set Up Minikube
-Start Minikube and create a Kubernetes deployment for the Dockerized application.
+Build and push Docker image:
 
 ```sh
-minikube start
+docker build -t username/devopsproject .
+docker images
+docker push username/devopsproject
 ```
 
-Create a Kubernetes deployment and service.
+---
 
-**k8s-deployment.yml**:
+## ☸️ Deploying on Minikube
+
+### **k8s-deployment.yml**
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -250,41 +181,32 @@ spec:
     nodePort: 30007
 ```
 
-commands
-```
-touch Dockerfile
-sudo nano Dockerfile
-docker build -t atuljkamble/devopsproject .
-sudo docker images
-sudo docker push atuljkamble/devopsproject
-touch k8s-deployment.yml
-sudo nano k8s-deployment.yml
+Apply the deployment:
+
+```sh
+kubectl apply -f k8s-deployment.yml
 ```
 
-#### 4. Jenkins Setup
-1. **Install Plugins**: Install necessary plugins like Docker, Maven, Kubernetes, and Ansible in Jenkins.
-2. **Create a Jenkins Pipeline**: Create a Jenkins pipeline to automate the build, Dockerization, and deployment process.
-```
-java -jar jenkins.war 
-```
-**Jenkinsfile**:
+---
+
+## 🛠️ Jenkins Setup
+
+### **Jenkinsfile**
+
 ```groovy
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/your-repo/simple-webapp.git'
             }
         }
-
         stage('Build with Maven') {
             steps {
                 sh 'mvn clean package'
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -292,7 +214,6 @@ pipeline {
                 }
             }
         }
-
         stage('Push Docker Image') {
             steps {
                 script {
@@ -302,7 +223,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Minikube') {
             steps {
                 script {
@@ -314,10 +234,12 @@ pipeline {
 }
 ```
 
-#### 5. Ansible Setup
-Ansible can be used to manage configurations and deployments.
+---
 
-**ansible/playbook.yml**:
+## 🤖 Ansible Configuration
+
+### **ansible/playbook.yml**
+
 ```yaml
 ---
 - name: Deploy simple-webapp on Kubernetes
@@ -327,51 +249,36 @@ Ansible can be used to manage configurations and deployments.
       command: kubectl apply -f k8s-deployment.yml
 ```
 
-**ansible/ansible.cfg**:
-```ini
-[defaults]
-inventory = ./inventory
-host_key_checking = False
+Run the playbook:
+
+```sh
+ansible-playbook ansible/playbook.yml
 ```
 
-**ansible/inventory**:
-```ini
-localhost ansible_connection=local
-```
+---
 
-#### 6. Running the Project
-- **Build the Maven Project**:
-    ```sh
-    mvn clean package
-    ```
+## ✅ Running the Project
 
-- **Build and Run Docker Image**:
-    ```sh
-    docker build -t simple-webapp:latest .
-    docker run -d -p 8080:8080 simple-webapp:latest
-    ```
+1. **Build Maven Project**
+   ```sh
+   mvn clean package
+   ```
+2. **Run Docker Container**
+   ```sh
+   docker run -d -p 8080:8080 simple-webapp:latest
+   ```
+3. **Deploy to Minikube**
+   ```sh
+   kubectl apply -f k8s-deployment.yml
+   ```
+4. **Run Ansible Playbook**
+   ```sh
+   ansible-playbook ansible/playbook.yml
+   ```
+5. **Start Jenkins and Run Pipeline**
+   ```sh
+   java -jar jenkins.war
+   ```
 
-- **Deploy to Minikube**:
-    ```sh
-    kubectl apply -f k8s-deployment.yml
-    ```
+🎉 **Your DevOps pipeline is now set up!** 🚀
 
-- **Run Ansible Playbook**:
-    ```sh
-    ansible-playbook ansible/playbook.yml
-    ```
-
-- **Jenkins Pipeline**: Run the pipeline through Jenkins UI.
-
-This setup integrates all the tools specified to create a CI/CD pipeline for a simple Java web application. Adjust configurations and scripts according to your specific requirements and environment.
-#   D e v O p s - P r o j e c t 
- 
- #   D e v O p s - P r o j e c t 
- 
- #   D e v O p s - P r o j e c t 
- 
- #   D e v O p s - P r o j e c t 
- 
- #   D e v O p s - P r o j e c t 
- 
- 
