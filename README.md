@@ -2,12 +2,12 @@
 Creating a project that integrates Ansible, Jenkins, Docker Desktop, Minikube, Maven, and Apache Tomcat involves several steps. Below is a detailed guide to set up a CI/CD pipeline using these tools.
 
 ### Prerequisites
-1. **Install Ansible**: Follow the installation instructions from the [Ansible documentation](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html).
-2. **Install Jenkins**: Download and install Jenkins from the [official website](https://www.jenkins.io/download/).
-3. **Install Docker Desktop**: Get Docker Desktop from the [Docker website](https://www.docker.com/products/docker-desktop/).
-4. **Install Minikube**: Install Minikube by following the [Minikube start guide](https://minikube.sigs.k8s.io/docs/start/).
-5. **Install Maven**: Install Maven from the [Apache Maven site](https://maven.apache.org/install.html).
-6. **Install Apache Tomcat**: Download and set up Apache Tomcat from the [Tomcat website](https://tomcat.apache.org/download-90.cgi).
+1. **Install Ansible**:
+2. **Install Jenkins**: Download and install Jenkins from the [official website]
+3. **Install Docker Desktop**: Get Docker Desktop from the [Docker website]
+4. **Install Minikube**: Install Minikube by following the [Minikube start guide]
+5. **Install Maven**: Install Maven from the [Apache Maven site]
+6. **Install Apache Tomcat**: Download and set up Apache Tomcat from the [Tomcat website]
 
 ### Project Structure
 Let's create a sample Java project that will be built using Maven, packaged into a Docker container, deployed on Minikube, and managed via Ansible and Jenkins.
@@ -29,13 +29,6 @@ java --version
 sudo yum install maven -y
 sudo yum install python -y
 // install git
-sudo yum install git -y
-// configure git
-git config --global user.name atulkamble
-git config --global user.email "atul_kamble@hotmail.com"
-// clone git project repo
-git clone https://github.com/atulkamble/DevOpsProject.git
-cd DevOpsProject
 pwd
 ls
 // install docker
@@ -164,21 +157,6 @@ The error message indicates that the Maven WAR plugin requires a `web.xml` file 
      mvn package
      ```
 
-### Complete Example Directory Structure
-
-Ensure your directory structure looks like this:
-
-```
-simple-webapp
-├── pom.xml
-└── src
-    └── main
-        └── webapp
-            ├── WEB-INF
-            │   └── web.xml
-            └── index.jsp
-```
-
 ### `pom.xml` File
 
 Your `pom.xml` should look like this:
@@ -287,7 +265,7 @@ sudo nano k8s-deployment.yml
 1. **Install Plugins**: Install necessary plugins like Docker, Maven, Kubernetes, and Ansible in Jenkins.
 2. **Create a Jenkins Pipeline**: Create a Jenkins pipeline to automate the build, Dockerization, and deployment process.
 ```
-java -jar jenkins.war --enable-future-java
+java -jar jenkins.war 
 ```
 **Jenkinsfile**:
 ```groovy
@@ -386,7 +364,10 @@ localhost ansible_connection=local
 - **Jenkins Pipeline**: Run the pipeline through Jenkins UI.
 
 This setup integrates all the tools specified to create a CI/CD pipeline for a simple Java web application. Adjust configurations and scripts according to your specific requirements and environment.
-#   D e v O p s - P r o j e c t  
- #   D e v O p s - P r o j e c t  
- #   D e v O p s - P r o j e c t  
+#   D e v O p s - P r o j e c t 
+ 
+ #   D e v O p s - P r o j e c t 
+ 
+ #   D e v O p s - P r o j e c t 
+ 
  
